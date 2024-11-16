@@ -6,6 +6,7 @@ from PIL import Image
 import nibabel as nib
 import numpy as np
 
+
 def arg_parser():
     parser = argparse.ArgumentParser(description='split 3d image into multiple 2d images')
     parser.add_argument('img_dir', type=str, help='path to nifti image directory')
