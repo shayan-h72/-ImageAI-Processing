@@ -41,9 +41,9 @@ def plot_sample(df, show_ab = False):
     sample_rec = sample.iloc[0]['record']
     wfdb.plot_wfdb(record=sample_rec, title='sample ECG signal')
     signal = sample_rec.p_signal
-    plt.figure(figsize=(10,4))
-
+    
     if show_ab:
+        plt.figure(figsize=(10,4))
         abnormal = ['L','R','V','/','A','f','F','j','a','E','J','e','S']
 
         sym = sample.iloc[0]['sym']
@@ -51,34 +51,38 @@ def plot_sample(df, show_ab = False):
         ab_index = [b for a,b in zip(sym,an_sample) if a in abnormal][:10]
         singnal_range = np.arange(len(signal))
 
-        window = 1000
-        ceneter = ab_index[0]
-        left, right =  max(0, ceneter - window)  , min(len(signal), ceneter + window)
+        if len(ab_index) > 0:
+            window = 1000
+            ceneter = ab_index[0]
+            left, right =  max(0, ceneter - window)  , min(len(signal), ceneter + window)
 
-        if len(signal[left:right]) > 0:
-            plt.plot(singnal_range[left:right], signal[left:right,0], label='ECG', linestyle='-', color='blue')
+            if len(signal[left:right]) > 0:
+                plt.plot(singnal_range[left:right], signal[left:right,0], label='ECG', linestyle='-', color='blue')
 
-            normal_indices = np.intersect1d(np.arange(left, right), an_sample)
-            plt.scatter(singnal_range[normal_indices], signal[normal_indices,0], color='green', label='Normal', marker='o')
+                normal_indices = np.intersect1d(np.arange(left, right), an_sample)
+                plt.scatter(singnal_range[normal_indices], signal[normal_indices,0], color='green', label='Normal', marker='o')
 
-            abnormal_indices = np.intersect1d(np.arange(left, right), ab_index)
-            plt.scatter(singnal_range[abnormal_indices], signal[abnormal_indices,0],color='red', label='Abnormal', marker='o')
+                abnormal_indices = np.intersect1d(np.arange(left, right), ab_index)
+                plt.scatter(singnal_range[abnormal_indices], signal[abnormal_indices,0],color='red', label='Abnormal', marker='o')
 
-            plt.xlim(left, right)
-            plt.ylim(signal[left:right, 0].min() - 0.05, signal[left:right, 0].max() + 0.05)
+                plt.xlim(left, right)
+                plt.ylim(signal[left:right, 0].min() - 0.05, signal[left:right, 0].max() + 0.05)
 
 
-            plt.xlabel('Time Index', fontsize=12)
-            plt.ylabel('ECG Signal', fontsize=12)
-            plt.title('ECG Signal with Annotations', fontsize=14)
-            plt.legend(loc='upper left', bbox_to_anchor=(1.05, 1))
-            plt.grid(True, linestyle='--', alpha=0.6)
+                plt.xlabel('Time Index', fontsize=12)
+                plt.ylabel('ECG Signal', fontsize=12)
+                plt.title('ECG Signal with Annotations', fontsize=14)
+                plt.legend(loc='upper left', bbox_to_anchor=(1.05, 1))
+                plt.grid(True, linestyle='--', alpha=0.6)
 
-            plt.tight_layout()
-            plt.show()
-        
+                plt.tight_layout()
+                plt.show()
+            
+            else:
+                print('No data in the selected range.')
+    
         else:
-            print('No data in the selected range.')
+            print('No abnormal annotations found.')
 
 data_files = process_data()
 df = read_data(data_files)
