@@ -84,10 +84,14 @@ def plot_sample(df, show_ab = False):
         else:
             print('No abnormal annotations found.')
 
-data_files = process_data()
-df = read_data(data_files)
+def get_data(plot = False, show_ab=True):
+    data_files = process_data()
+    df = read_data(data_files)
 
-print('some information about dataset...')
-print(df.groupby('sym').val.sum().sort_values(ascending=False))
+    print('some information about dataset...')
+    print(df.groupby('sym').val.sum().sort_values(ascending=False))
 
-plot_sample(df, show_ab=True)
+    if plot:
+        plot_sample(df, show_ab=show_ab)
+    
+    return df
